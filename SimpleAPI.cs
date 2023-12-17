@@ -90,11 +90,11 @@ namespace Wiremock.Examples
         }
 
         [Fact]
-        public async Task BodyTest()
+        public async Task MatchIdInBodyRootTest()
         {
             // ARRANGE
             HttpClient httpClient = new HttpClient();
-            BodyTestStub();
+            MatchIdInBodyRootTestStub();
 
             // ACT
             string postValue = "{\"Id\":\"12345678\"}";
@@ -106,7 +106,7 @@ namespace Wiremock.Examples
             result.StatusCode.Should().Be(HttpStatusCode.OK);
         }
 
-        private void BodyTestStub()
+        private void MatchIdInBodyRootTestStub()
         {
             // https://github.com/WireMock-Net/WireMock.Net/wiki/Request-Matching-JsonPathMatcher
             // https://docs.hevodata.com/sources/engg-analytics/streaming/rest-api/writing-jsonpath-expressions/#:~:text=A%20JSONPath%20expression%20begins%20with,%5D)%20called%20the%20bracket%20notation.
