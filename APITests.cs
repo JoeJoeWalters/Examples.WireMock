@@ -157,6 +157,43 @@ namespace Wiremock.Examples
                     );
         }
 
+
+        [Fact]
+        public async Task DefaultTest()
+        {
+            // ARRANGE
+            HttpClient httpClient = new HttpClient();
+            DefaultTestStub();
+
+            // ACT
+            var result = await httpClient.GetAsync($"{_baseUri}/tokens/12345678");
+
+            // ASSERT
+            string body = await result.Content.ReadAsStringAsync();
+            result.StatusCode.Should().Be(HttpStatusCode.NotFound);
+        }
+
+        private void DefaultTestStub()
+        {
+            // Find a specific id
+            _mockServer
+                .Given(Request.Create().WithPath("/tokens/1234567890").UsingGet()).AtPriority(1)
+                .RespondWith(Response.Create()
+                        .WithStatusCode(HttpStatusCode.OK)
+                        .WithHeader("Content-Type", "application/json")
+                        .WithBody(BodyFactory, "application/json")
+                    );
+
+            // Everything else is "not found"
+            _mockServer
+                .Given(Request.Create().WithPath("/tokens/*").UsingGet()).AtPriority(100)
+                .RespondWith(Response.Create()
+                        .WithStatusCode(HttpStatusCode.NotFound)
+                        .WithHeader("Content-Type", "application/json")
+                        .WithBody(BodyFactory, "application/json")
+                    );
+        }
+
         /// <summary>
         /// Must dispose of the mock after every test as it will block the 
         /// next test from running as the port will be in use
